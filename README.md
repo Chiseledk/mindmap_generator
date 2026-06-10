@@ -105,6 +105,7 @@ http://127.0.0.1:5000
 在项目根目录创建 `.env` 文件：
 
 ```env
+MINDMAP_AI_ENABLED=false
 SPARK_API_PASSWORD=your_api_password_here
 SPARK_API_URL=https://spark-api-open.xf-yun.com/v1/chat/completions
 SPARK_MODEL=4.0Ultra
@@ -116,6 +117,8 @@ FLASK_SECRET_KEY=your_secret_here
 ```http
 Authorization: Bearer your_api_password_here
 ```
+
+`MINDMAP_AI_ENABLED=false` 表示关闭 AI 调用，只使用本地算法。需要启用 AI 时改为 `true`，并填写 `SPARK_API_PASSWORD`。
 
 ## API
 

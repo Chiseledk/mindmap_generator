@@ -39,6 +39,12 @@ SPARK_API_URL = os.getenv(
 )
 SPARK_API_PASSWORD = os.getenv("SPARK_API_PASSWORD") or os.getenv("SPARK_API_KEY")
 SPARK_MODEL = os.getenv("SPARK_MODEL", "4.0Ultra")
+MINDMAP_AI_ENABLED = os.getenv("MINDMAP_AI_ENABLED", "true").strip().lower() not in {
+    "0",
+    "false",
+    "no",
+    "off",
+}
 
 
 def generate_structured_mindmap(source_text: str) -> Optional[str]:
@@ -95,6 +101,10 @@ JSON 必须符合以下 Schema：
 
 
 def _chat_json(system_prompt: str, user_prompt: str, temperature: float) -> Optional[str]:
+    if not MINDMAP_AI_ENABLED:
+        print("[AI Processor] AI is disabled by MINDMAP_AI_ENABLED; local algorithm will be used.")
+        return None
+
     if requests is None:
         print("[AI Processor] requests is not installed; local algorithm will be used.")
         return None
