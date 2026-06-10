@@ -45,6 +45,11 @@ MINDMAP_AI_ENABLED = os.getenv("MINDMAP_AI_ENABLED", "true").strip().lower() not
     "no",
     "off",
 }
+LAST_AI_ERROR: Optional[str] = None
+
+
+def get_last_ai_error() -> Optional[str]:
+    return LAST_AI_ERROR
 
 
 def generate_structured_mindmap(source_text: str) -> Optional[str]:
@@ -101,15 +106,21 @@ JSON 必须符合以下 Schema：
 
 
 def _chat_json(system_prompt: str, user_prompt: str, temperature: float) -> Optional[str]:
+    global LAST_AI_ERROR
+    LAST_AI_ERROR = None
+
     if not MINDMAP_AI_ENABLED:
+        LAST_AI_ERROR = "AI 开关已关闭"
         print("[AI Processor] AI is disabled by MINDMAP_AI_ENABLED; local algorithm will be used.")
         return None
 
     if requests is None:
+        LAST_AI_ERROR = "requests 依赖未安装"
         print("[AI Processor] requests is not installed; local algorithm will be used.")
         return None
 
     if not SPARK_API_PASSWORD:
+        LAST_AI_ERROR = "SPARK_API_PASSWORD 未配置"
         print("[AI Processor] SPARK_API_PASSWORD is not configured; local algorithm will be used.")
         return None
 
@@ -133,5 +144,6 @@ def _chat_json(system_prompt: str, user_prompt: str, temperature: float) -> Opti
         response_json = response.json()
         return response_json["choices"][0]["message"]["content"].strip()
     except Exception as exc:
+        LAST_AI_ERROR = str(exc)
         print(f"[AI Processor] Spark API call failed: {exc}")
         return None

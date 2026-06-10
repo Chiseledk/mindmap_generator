@@ -28,7 +28,7 @@ def api_generate_mindmap():
             "generation_source": None,
         }), 400
 
-    mindmap_object, error_message, generation_source = generate_mindmap_content(source_text)
+    mindmap_object, error_message, generation_source, ai_status = generate_mindmap_content(source_text)
     if mindmap_object:
         mindmap_dict = mindmap_object.model_dump()
         return jsonify({
@@ -37,6 +37,7 @@ def api_generate_mindmap():
             "mindmap_data": mindmap_object.model_dump_json(indent=2),
             "graph_data": mindmap_dict.get("graph"),
             "generation_source": generation_source,
+            "ai_status": ai_status,
             "error": None,
         })
 
@@ -46,6 +47,7 @@ def api_generate_mindmap():
         "mindmap_data": None,
         "graph_data": None,
         "generation_source": generation_source,
+        "ai_status": ai_status,
         "error": error_message or "未知错误，无法生成思维导图。",
     }), 500
 

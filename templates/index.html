@@ -404,7 +404,7 @@
             renderMindmap(lastMindmap.graph);
             syncJsonPanel();
             addHistoryEntry();
-            setStatus(`${sourceLabel(data.generation_source)}，已生成 ${lastMindmap.graph.nodes.length} 个节点、${lastMindmap.graph.edges.length} 条边。`);
+            setStatus(`${sourceLabel(data.generation_source)}，已生成 ${lastMindmap.graph.nodes.length} 个节点、${lastMindmap.graph.edges.length} 条边。${aiStatusText(data)}`);
         } catch (error) {
             setStatus(error.message, true);
         } finally {
@@ -818,6 +818,11 @@
             algorithm_only: "本地算法生成"
         };
         return labels[source] || "生成完成";
+    }
+
+    function aiStatusText(data) {
+        if (!data.ai_status || data.generation_source !== "algorithm_only") return "";
+        return `（${data.ai_status}）`;
     }
 
     function safeJson(value, fallback) {
